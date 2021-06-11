@@ -65,8 +65,43 @@ describe('blattodea routes', () => {
     expect(res.body).toEqual([blattodeaOne, blattodeaTwo, blattodeaThree]);
 
   });
-});
 
+  it('deletes a blattodea', async () => {
+
+
+    const deadBlattodea = await Blattodea.insert({
+      name: 'Batman',
+      habitat: 'artic',
+      length: .5,
+    });
+
+    const res = await request(app).delete(`/api/v1/blattodeas/${deadBlattodea.id}`);
+
+    expect(res.body).toEqual(deadBlattodea);
+
+  });
+
+  it('updates a blattodea', async () => {
+
+    const originalBlattodea = await Blattodea.insert({
+      name: 'Brown',
+      habitat: 'urban',
+      length: 1.2,
+    });
+
+    const changedBlattodea = ({
+      id: '1',
+      name: 'Brown',
+      habitat: 'urban',
+      length: 1.5,
+    });
+
+    const res = await request(app).put(`/api/v1/blattodeas/${originalBlattodea.id}`).send(changedBlattodea);
+
+    expect(res.body).toEqual(changedBlattodea);
+  });
+  
+});
 
 describe('animorph routes', () => {
   beforeEach(() => {
@@ -133,6 +168,20 @@ describe('animorph routes', () => {
 
     expect(res.body).toEqual([Rachel, Tobias, Casey]);
   
+  });
+
+  it('deletes a animorph', async () => {
+
+    const animorphTester = await Animorph.insert({ 
+      name: 'Marco',
+      morph: 'wolf',
+      minutes: 20,
+      isMorphed: true
+    });
+
+    const res = await request(app).delete(`/api/v1/animorphs/${animorphTester.id}`);
+
+    expect(res.body).toEqual(animorphTester);
   });
 
 });
