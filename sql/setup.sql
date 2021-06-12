@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS blattodea;
 DROP TABLE IF EXISTS animorph;
+DROP TABLE IF EXISTS tas;
 
 CREATE TABLE blattodea (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -14,4 +15,12 @@ CREATE TABLE animorph (
   morph TEXT NOT NULL,
   minutes FLOAT NOT NULL,
   is_morphed BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE tas (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  harvests_student_tears BOOLEAN DEFAULT TRUE,
+  number_of_student_projects_completed INTEGER NOT NULL,
+  grading_difficulty INTEGER NOT NULL
 );

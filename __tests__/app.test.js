@@ -3,7 +3,8 @@ import setup from '../data/setup.js';
 import request from 'supertest';
 import app from '../lib/app.js';
 import { Blattodea } from '../lib/models/Blattodea';
-import { Animorph } from '../lib/models/Animorph.js';
+import { Animorph } from '../lib/models/Animorph';
+import { Ta } from '../lib/models/Ta';
 
 describe('blattodea routes', () => {
   beforeEach(() => {
@@ -184,6 +185,126 @@ describe('animorph routes', () => {
     expect(res.body).toEqual(animorphTester);
   });
 
+  it('edits an animorph', async () => {
+
+    const originalTobias = await Animorph.insert({
+      name: 'Tobias',
+      morph: 'red tailed hawk',
+      minutes: 121,
+      isMorphed: true
+    });
+
+    originalTobias.minutes = 1000000;
+
+    const res = await request(app).put(`/api/v1/animorphs/${originalTobias.id}`).send(originalTobias);
+
+    expect(res.body).toEqual(originalTobias);
+
+  });
+
 });
 
+describe('TA routes', () => {
 
+  beforeEach(() => {
+    return setup(pool);
+  });
+
+  const tokenTA = {
+    id: '1',
+    name: 'Eddy',
+    harvestsStudentTears: false,
+    numberOfStudentProjectsCompleted: 0,
+    gradingDifficulty: 1
+  };
+
+  it('creates a new TA to right student confusion', async () => {
+
+    const res = await request(app)
+      .post('/api/v1/tas')
+      .send({ name: 'Eddy', harvestsStudentTears: false, numberOfStudentProjectsCompleted: 0, gradingDifficulty: 1 });
+
+    expect(res.body).toEqual(tokenTA);
+  });
+
+  it('requests smartest TA to complete assignment', async () => {
+
+    const jakeTA = await Ta.insert({
+      id: '1',
+      name: 'Jake',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 0,
+      gradingDifficulty: 0
+    });
+
+    const res = await request(app)
+      .get(`/api/v1/tas/${jakeTA.id}`);
+
+    expect(res.body).toEqual(jakeTA);
+
+  });
+
+  it('gets all TAs for either massive issue...or spelling error', async () => {
+
+    const DanTA = await Ta.insert({
+      name: 'Dan',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 99,
+      gradingDifficulty: 10
+    });
+    const JenaTA = await Ta.insert({
+      name: 'Jena',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 55,
+      gradingDifficulty: 9
+    });
+    const BryanaTA = await Ta.insert({
+      name: 'Bryana',
+      harvestsStudentTears: true,
+      numberOfStudentProjectsCompleted: 80,
+      gradingDifficulty: 7
+    });
+
+    const res = await request(app)
+      .get('/api/v1/tas');
+
+    expect(res.body).toEqual([DanTA, JenaTA, BryanaTA]);
+
+  });
+
+  it('removes TA after completing assignment', async () => {
+
+    const PerryTA = await Ta.insert({
+      id: '1',
+      name: 'Perry',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 45,
+      gradingDifficulty: 5
+    });
+
+    const res = await request(app)
+      .delete(`/api/v1/tas/${PerryTA.id}`);
+
+    expect(res.body).toEqual(PerryTA);
+  });
+
+  it('edits TA', async () => {
+
+    const DanTA = await Ta.insert({
+      name: 'Dan',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 99,
+      gradingDifficulty: 10
+    });
+    
+    DanTA.numberOfStudentProjectsCompleted = 99999999;
+    DanTA.gradingDifficulty = 12;
+    DanTA.harvestsStudentTears = true;
+
+    const res = await request(app)
+      .put(`/api/v1/tas/${DanTA.id}`)
+      .send(DanTA);
+
+    expect(res.body).toEqual(DanTA);
+  });
+});
