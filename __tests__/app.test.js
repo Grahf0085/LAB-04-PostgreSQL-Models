@@ -8,6 +8,7 @@ import { Ta } from '../lib/models/Ta';
 import { Laptop } from '../lib/models/Laptop';
 
 describe('blattodea routes', () => {
+
   beforeEach(() => {
     return setup(pool);
   });
@@ -16,29 +17,33 @@ describe('blattodea routes', () => {
 
     const res = await request(app)
       .post('/api/v1/blattodeas')
-      .send({ name: 'buddy', habitat: 'fresh water wetland', length: 1 });
+      .send({ 
+        name: 'buddy', 
+        habitat: 'fresh water wetland', 
+        length: 1 
+      });
 
     expect(res.body).toEqual({
       id: '1',
       name: 'buddy',
       habitat: 'fresh water wetland',
       length: 1,
-
     }); 
 
   });
 
   it('finds a blattodea via GET', async () => {
 
-    const blattodea = await Blattodea.insert({
+    const cockroach = await Blattodea.insert({
       name: 'friend',
       habitat: 'salt water wetland',
       length: 1.5,
     });
 
-    const res = await request(app).get(`/api/v1/blattodeas/${blattodea.id}`);
+    const res = await request(app)
+      .get(`/api/v1/blattodeas/${cockroach.id}`);
 
-    expect(res.body).toEqual(blattodea);
+    expect(res.body).toEqual(cockroach);
 
   });
 
@@ -61,8 +66,9 @@ describe('blattodea routes', () => {
       habitat: 'volcanic',
       length: 1.9,
     });
-
-    const res = await request(app).get('/api/v1/blattodeas');
+    
+    const res = await request(app)
+      .get('/api/v1/blattodeas');
 
     expect(res.body).toEqual([blattodeaOne, blattodeaTwo, blattodeaThree]);
 
@@ -70,14 +76,14 @@ describe('blattodea routes', () => {
 
   it('deletes a blattodea', async () => {
 
-
     const deadBlattodea = await Blattodea.insert({
       name: 'Batman',
       habitat: 'artic',
       length: .5,
     });
 
-    const res = await request(app).delete(`/api/v1/blattodeas/${deadBlattodea.id}`);
+    const res = await request(app)
+      .delete(`/api/v1/blattodeas/${deadBlattodea.id}`);
 
     expect(res.body).toEqual(deadBlattodea);
 
@@ -91,6 +97,12 @@ describe('blattodea routes', () => {
       length: 1.2,
     });
 
+    originalBlattodea.length = 1.5;
+
+    const res = await request(app)
+      .put(`/api/v1/blattodeas/${originalBlattodea.id}`)
+      .send(originalBlattodea);
+
     const changedBlattodea = ({
       id: '1',
       name: 'Brown',
@@ -98,14 +110,13 @@ describe('blattodea routes', () => {
       length: 1.5,
     });
 
-    const res = await request(app).put(`/api/v1/blattodeas/${originalBlattodea.id}`).send(changedBlattodea);
-
     expect(res.body).toEqual(changedBlattodea);
   });
   
 });
 
 describe('animorph routes', () => {
+
   beforeEach(() => {
     return setup(pool);
   });
@@ -114,32 +125,36 @@ describe('animorph routes', () => {
 
     const res = await request(app)
       .post('/api/v1/animorphs')
-      .send({ name: 'Jake', morph: 'tiger', minutes: 100, isMorphed: true });
+      .send({ 
+        name: 'Jake', 
+        morph: 'tiger', 
+        minutes: 100, 
+        isMorphed: true 
+      });
 
     expect(res.body).toEqual({
-
       id: '1',
       name: 'Jake',
       morph: 'tiger',
       minutes: 100,
       isMorphed: true
-
     }); 
 
   });
 
   it('finds an animorph', async () => {
 
-    const animorphTester = await Animorph.insert({ 
+    const comicRelief = await Animorph.insert({ 
       name: 'Marco',
       morph: 'wolf',
       minutes: 20,
       isMorphed: true
     });
 
-    const res = await request(app).get(`/api/v1/animorphs/${animorphTester.id}`);
+    const res = await request(app)
+      .get(`/api/v1/animorphs/${comicRelief.id}`);
 
-    expect(res.body).toEqual(animorphTester);
+    expect(res.body).toEqual(comicRelief);
 
   });
 
@@ -166,13 +181,14 @@ describe('animorph routes', () => {
       isMorphed: true
     });
 
-    const res = await request(app).get('/api/v1/animorphs');
+    const res = await request(app)
+      .get('/api/v1/animorphs');
 
     expect(res.body).toEqual([Rachel, Tobias, Casey]);
   
   });
 
-  it('deletes a animorph', async () => {
+  it('kills an animorph', async () => {
 
     const animorphTester = await Animorph.insert({ 
       name: 'Marco',
@@ -181,12 +197,14 @@ describe('animorph routes', () => {
       isMorphed: true
     });
 
-    const res = await request(app).delete(`/api/v1/animorphs/${animorphTester.id}`);
+    const res = await request(app)
+      .delete(`/api/v1/animorphs/${animorphTester.id}`);
 
     expect(res.body).toEqual(animorphTester);
+
   });
 
-  it('edits an animorph', async () => {
+  it('morphs an animorph', async () => {
 
     const originalTobias = await Animorph.insert({
       name: 'Tobias',
@@ -197,9 +215,17 @@ describe('animorph routes', () => {
 
     originalTobias.minutes = 1000000;
 
-    const res = await request(app).put(`/api/v1/animorphs/${originalTobias.id}`).send(originalTobias);
+    const res = await request(app)
+      .put(`/api/v1/animorphs/${originalTobias.id}`)
+      .send(originalTobias);
 
-    expect(res.body).toEqual(originalTobias);
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Tobias',
+      morph: 'red tailed hawk',
+      minutes: 1000000,
+      isMorphed: true
+    });
 
   });
 
@@ -211,27 +237,29 @@ describe('TA routes', () => {
     return setup(pool);
   });
 
-  const tokenTA = {
-    id: '1',
-    name: 'Eddy',
-    harvestsStudentTears: false,
-    numberOfStudentProjectsCompleted: 0,
-    gradingDifficulty: 1
-  };
-
   it('creates a new TA to right student confusion', async () => {
 
     const res = await request(app)
       .post('/api/v1/tas')
-      .send({ name: 'Eddy', harvestsStudentTears: false, numberOfStudentProjectsCompleted: 0, gradingDifficulty: 1 });
+      .send({ 
+        name: 'Eddy', 
+        harvestsStudentTears: false, 
+        numberOfStudentProjectsCompleted: 0, 
+        gradingDifficulty: 1 
+      });
 
-    expect(res.body).toEqual(tokenTA);
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Eddy',
+      harvestsStudentTears: false,
+      numberOfStudentProjectsCompleted: 0,
+      gradingDifficulty: 1
+    });
   });
 
-  it('requests smartest TA to complete assignment', async () => {
+  it('gets smartest TA to complete assignment', async () => {
 
     const jakeTA = await Ta.insert({
-      id: '1',
       name: 'Jake',
       harvestsStudentTears: false,
       numberOfStudentProjectsCompleted: 0,
@@ -245,7 +273,7 @@ describe('TA routes', () => {
 
   });
 
-  it('gets all TAs for either massive issue...or spelling error', async () => {
+  it('gets all TAs for massive coding conundrum...or spelling error', async () => {
 
     const DanTA = await Ta.insert({
       name: 'Dan',
@@ -276,7 +304,6 @@ describe('TA routes', () => {
   it('removes TA after completing assignment', async () => {
 
     const PerryTA = await Ta.insert({
-      id: '1',
       name: 'Perry',
       harvestsStudentTears: false,
       numberOfStudentProjectsCompleted: 45,
@@ -287,6 +314,7 @@ describe('TA routes', () => {
       .delete(`/api/v1/tas/${PerryTA.id}`);
 
     expect(res.body).toEqual(PerryTA);
+
   });
 
   it('edits TA', async () => {
@@ -306,37 +334,50 @@ describe('TA routes', () => {
       .put(`/api/v1/tas/${DanTA.id}`)
       .send(DanTA);
 
-    expect(res.body).toEqual(DanTA);
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Dan',
+      harvestsStudentTears: true,
+      numberOfStudentProjectsCompleted: 99999999,
+      gradingDifficulty: 12
+    });
+
   });
+
 });
 
 describe('laptop tests', () => {
+
   beforeEach (() => {
     return setup(pool);
   });
 
   it('creates a laptop', async () => {
 
-    const newLaptop = {
+    const res = await request(app)
+      .post('/api/v1/laptops')
+      .send({
+        make: 'lenovo',
+        model: 'x1 nano',
+        aspectRatio: '16:10',
+        upgradable: false,
+        keyTravel: 1.3
+      });
+
+    expect(res.body).toEqual({
       id: '1',
       make: 'lenovo',
       model: 'x1 nano',
       aspectRatio: '16:10',
       upgradable: false,
       keyTravel: 1.3
-    };
+    });
 
-    const res = await request(app)
-      .post('/api/v1/laptops')
-      .send(newLaptop);
-
-    expect(res.body).toEqual(newLaptop);
   });
 
   it('gets a specific laptop', async () => {
 
     const idealLaptop = await Laptop.insert({
-      id: '1',
       make: 'framework',
       model: 'DIY',
       aspectRatio: '3:2',
@@ -351,19 +392,17 @@ describe('laptop tests', () => {
 
   });
 
-  it('gets all laptopds', async () => {
+  it('gets all laptops', async () => {
 
     const laptopOne = await Laptop.insert({
-      id: '1',
       make: 'lenovo',
-      model: 'x1 carbpn',
+      model: 'x1 carbon',
       aspectRatio: '16:10',
       upgradable: false,
       keyTravel: 1.3
     });
 
     const laptopTwo = await Laptop.insert({
-      id: '2',
       make: 'razer',
       model: 'blade',
       aspectRatio: '16:9',
@@ -372,7 +411,6 @@ describe('laptop tests', () => {
     });
 
     const laptopThree = await Laptop.insert({
-      id: '3',
       make: 'apple',
       model: 'macbook pro',
       aspectRatio: '16:10',
@@ -389,7 +427,6 @@ describe('laptop tests', () => {
   it('destroys a laptop', async () => {
 
     const brokenLaptop = await Laptop.insert({
-      id: '1',
       make: 'huawei',
       model: 'matebook x pro',
       aspectRatio: '3:2',
@@ -407,7 +444,6 @@ describe('laptop tests', () => {
   it('upgrades a laptop', async () => {
 
     const upgradableLaptop = await Laptop.insert({
-      id: '1',
       make: 'faremwork',
       model: 'diy',
       aspectRatio: '3:2',
@@ -417,14 +453,20 @@ describe('laptop tests', () => {
 
     upgradableLaptop.keyTravel = 2.0;
 
+    const changedLaptop = {
+      id: '1',
+      make: 'faremwork',
+      model: 'diy',
+      aspectRatio: '3:2',
+      upgradable: true,
+      keyTravel: 2.0
+    };    
+
     const res = await request(app)
-      .put('/api/v1/laptops/:id')
+      .put(`/api/v1/laptops/${upgradableLaptop.id}`)
       .send(upgradableLaptop);
 
-    expect(res.body).toEqual(upgradableLaptop);
+    expect(res.body).toEqual(changedLaptop);
   });
 
 });
-
-
-//why import model into test(user) if model talks to database
