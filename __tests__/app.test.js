@@ -5,6 +5,7 @@ import app from '../lib/app.js';
 import { Blattodea } from '../lib/models/Blattodea';
 import { Animorph } from '../lib/models/Animorph';
 import { Ta } from '../lib/models/Ta';
+import { Laptop } from '../lib/models/Laptop';
 
 describe('blattodea routes', () => {
   beforeEach(() => {
@@ -127,7 +128,7 @@ describe('animorph routes', () => {
 
   });
 
-  it('finds an animorph via', async () => {
+  it('finds an animorph', async () => {
 
     const animorphTester = await Animorph.insert({ 
       name: 'Marco',
@@ -308,3 +309,122 @@ describe('TA routes', () => {
     expect(res.body).toEqual(DanTA);
   });
 });
+
+describe('laptop tests', () => {
+  beforeEach (() => {
+    return setup(pool);
+  });
+
+  it('creates a laptop', async () => {
+
+    const newLaptop = {
+      id: '1',
+      make: 'lenovo',
+      model: 'x1 nano',
+      aspectRatio: '16:10',
+      upgradable: false,
+      keyTravel: 1.3
+    };
+
+    const res = await request(app)
+      .post('/api/v1/laptops')
+      .send(newLaptop);
+
+    expect(res.body).toEqual(newLaptop);
+  });
+
+  it('gets a specific laptop', async () => {
+
+    const idealLaptop = await Laptop.insert({
+      id: '1',
+      make: 'framework',
+      model: 'DIY',
+      aspectRatio: '3:2',
+      upgradable: true,
+      keyTravel: 1.5
+    });
+
+    const res = await request(app)
+      .get(`/api/v1/laptops/${idealLaptop.id}`);
+
+    expect(res.body).toEqual(idealLaptop);
+
+  });
+
+  it('gets all laptopds', async () => {
+
+    const laptopOne = await Laptop.insert({
+      id: '1',
+      make: 'lenovo',
+      model: 'x1 carbpn',
+      aspectRatio: '16:10',
+      upgradable: false,
+      keyTravel: 1.3
+    });
+
+    const laptopTwo = await Laptop.insert({
+      id: '2',
+      make: 'razer',
+      model: 'blade',
+      aspectRatio: '16:9',
+      upgradable: false,
+      keyTravel: 1.7
+    });
+
+    const laptopThree = await Laptop.insert({
+      id: '3',
+      make: 'apple',
+      model: 'macbook pro',
+      aspectRatio: '16:10',
+      upgradable: false,
+      keyTravel: 1
+    });
+
+    const res = await request(app)
+      .get('/api/v1/laptops');
+
+    expect(res.body).toEqual([laptopOne, laptopTwo, laptopThree]);
+  });
+
+  it('destroys a laptop', async () => {
+
+    const brokenLaptop = await Laptop.insert({
+      id: '1',
+      make: 'huawei',
+      model: 'matebook x pro',
+      aspectRatio: '3:2',
+      upgradable: false,
+      keyTravel: 1.5
+    });    
+
+    const res = await request(app)
+      .delete(`/api/v1/laptops/${brokenLaptop.id}`);
+
+    expect(res.body).toEqual(brokenLaptop);
+
+  });
+
+  it('upgrades a laptop', async () => {
+
+    const upgradableLaptop = await Laptop.insert({
+      id: '1',
+      make: 'faremwork',
+      model: 'diy',
+      aspectRatio: '3:2',
+      upgradable: true,
+      keyTravel: 1.5
+    });
+
+    upgradableLaptop.keyTravel = 2.0;
+
+    const res = await request(app)
+      .put('/api/v1/laptops/:id')
+      .send(upgradableLaptop);
+
+    expect(res.body).toEqual(upgradableLaptop);
+  });
+
+});
+
+
+//why import model into test(user) if model talks to database

@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS blattodea;
 DROP TABLE IF EXISTS animorph;
 DROP TABLE IF EXISTS tas;
+DROP TABLE IF EXISTS laptops;
 
 CREATE TABLE blattodea (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -23,4 +24,13 @@ CREATE TABLE tas (
   harvests_student_tears BOOLEAN DEFAULT TRUE,
   number_of_student_projects_completed INTEGER NOT NULL,
   grading_difficulty INTEGER NOT NULL
+);
+
+CREATE TABLE laptops (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  make TEXT NOT NULL,
+  model TEXT NOT NULL,
+  aspect_ratio TEXT NOT NULL,
+  upgradable BOOLEAN DEFAULT FALSE,
+  key_travel FLOAT NOT NULL
 );
