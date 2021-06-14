@@ -1,0 +1,45 @@
+DROP TABLE IF EXISTS blattodea;
+DROP TABLE IF EXISTS animorph;
+DROP TABLE IF EXISTS tas;
+DROP TABLE IF EXISTS laptops;
+DROP TABLE IF EXISTS xenotoons;
+
+CREATE TABLE blattodea (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  habitat TEXT NOT NULL,
+  length FLOAT NOT NULL
+);
+
+CREATE TABLE animorph (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  morph TEXT NOT NULL,
+  minutes FLOAT NOT NULL,
+  is_morphed BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE tas (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  harvests_student_tears BOOLEAN DEFAULT TRUE,
+  number_of_student_projects_completed INTEGER NOT NULL,
+  grading_difficulty INTEGER NOT NULL
+);
+
+CREATE TABLE laptops (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  make TEXT NOT NULL,
+  model TEXT NOT NULL,
+  aspect_ratio TEXT NOT NULL,
+  upgradable BOOLEAN DEFAULT FALSE,
+  key_travel FLOAT NOT NULL
+);
+
+CREATE TABLE xenotoons (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  weapon TEXT NOT NULL,
+  number_of_personalities INTEGER NOT NULL,
+  purpose_destroy_world BOOLEAN DEFAULT TRUE
+);
