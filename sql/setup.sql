@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS blattodea;
 DROP TABLE IF EXISTS animorph;
 DROP TABLE IF EXISTS tas;
 DROP TABLE IF EXISTS laptops;
+DROP TABLE IF EXISTS xenotoons;
 
 CREATE TABLE blattodea (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -33,4 +34,12 @@ CREATE TABLE laptops (
   aspect_ratio TEXT NOT NULL,
   upgradable BOOLEAN DEFAULT FALSE,
   key_travel FLOAT NOT NULL
+);
+
+CREATE TABLE xenotoons (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  weapon TEXT NOT NULL,
+  number_of_personalities INTEGER NOT NULL,
+  purpose_destroy_world BOOLEAN DEFAULT TRUE
 );

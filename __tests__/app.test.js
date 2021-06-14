@@ -6,6 +6,7 @@ import { Blattodea } from '../lib/models/Blattodea';
 import { Animorph } from '../lib/models/Animorph';
 import { Ta } from '../lib/models/Ta';
 import { Laptop } from '../lib/models/Laptop';
+import { Xenotoon } from '../lib/models/Xenotoon.js';
 
 describe('blattodea routes', () => {
 
@@ -467,6 +468,127 @@ describe('laptop tests', () => {
       .send(upgradableLaptop);
 
     expect(res.body).toEqual(changedLaptop);
+  });
+
+});
+
+describe ('xenotoon tests', () => {
+
+  beforeEach (() => {
+    return setup(pool);
+  });
+
+  it('inserts a xenotoon', async () => {
+
+    const res = await request(app)
+      .post('/api/v1/xenotoons')
+      .send({
+        name: 'token xeno toon',
+        weapon: 'some sword',
+        numberOfPersonalities: 100,
+        purposeDestroyWorld: true
+      });
+
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'token xeno toon',
+      weapon: 'some sword',
+      numberOfPersonalities: 100,
+      purposeDestroyWorld: true
+    });
+
+  });
+
+  it('gets all xenotoons', async () => {
+
+    const Fei = await Xenotoon.insert({
+      name: 'Fei Fong Wong',
+      weapon: 'fists',
+      numberOfPersonalities: 3,
+      purposeDestroyWorld: true
+    });
+
+    const Shulk = await Xenotoon.insert({
+      name: 'Shulk',
+      weapon: 'Monado',
+      numberOfPersonalities: 2,
+      purposeDestroyWorld: true
+    });
+
+    const Shion = await Xenotoon.insert({
+      name: 'Shion Uzuki',
+      weapon: 'Tech',
+      numberOfPersonalities: 1,
+      purposeDestroyWorld: true
+    });
+
+    const res = await request(app)
+      .get('/api/v1/xenotoons');
+
+    expect(res.body).toEqual([Fei, Shulk, Shion]);
+  });
+
+  it('gets a xenotoon', async () => {
+
+    const Rex = await Xenotoon.insert({
+      name: 'Rex',
+      weapon: 'flaming sword',
+      numberOfPersonalities: 1,
+      purposeDestroyWorld: false
+    });
+
+    const res = await request(app)
+      .get(`/api/v1/xenotoons/${Rex.id}`);
+
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Rex',
+      weapon: 'flaming sword',
+      numberOfPersonalities: 1,
+      purposeDestroyWorld: false
+    });
+
+  });
+
+  it('deletes a xenotoon', async () => {
+
+    const Mythra = await Xenotoon.insert({
+      name: 'Mythra',
+      weapon: 'shiny sword',
+      numberOfPersonalities: 2,
+      purposeDestroyWorld: true
+    }); 
+
+    const res = await request(app)
+      .delete(`/api/v1/xenotoons/${Mythra.id}`);
+
+    expect(res.body).toEqual(Mythra);
+
+  });
+
+  it('updates a xenotoon', async () => {
+    
+    const Mythra = await Xenotoon.insert({
+      name: 'Mythra',
+      weapon: 'shiny sword',
+      numberOfPersonalities: 2,
+      purposeDestroyWorld: true
+    }); 
+
+    Mythra.name = 'Pyra';
+    Mythra.weapon = 'Flaming Sword';
+
+    const res = await request(app)
+      .put(`/api/v1/xenotoons/${Mythra.id}`)
+      .send(Mythra);
+
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Pyra',
+      weapon: 'Flaming Sword',
+      numberOfPersonalities: 2,
+      purposeDestroyWorld: true
+    });
   });
 
 });
